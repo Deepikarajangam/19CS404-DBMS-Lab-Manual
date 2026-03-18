@@ -310,6 +310,54 @@ END;
 
 **Output:**  
 The program should update employee salaries and display a message, or it should display an error message if no data is found.
+## INPUT:
+```
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT emp_id, salary
+        FROM employees
+        WHERE dept_no = 101
+        FOR UPDATE;
+
+    v_emp_id employees.emp_id%TYPE;
+    v_salary employees.salary%TYPE;
+
+    count_emp NUMBER := 0;
+
+BEGIN
+    OPEN emp_cursor;
+
+    LOOP
+        FETCH emp_cursor INTO v_emp_id, v_salary;
+        EXIT WHEN emp_cursor%NOTFOUND;
+
+        UPDATE employees
+        SET salary = salary + 5000
+        WHERE CURRENT OF emp_cursor;
+
+        count_emp := count_emp + 1;
+    END LOOP;
+
+    CLOSE emp_cursor;
+
+    IF count_emp = 0 THEN
+        RAISE NO_DATA_FOUND;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Salaries updated successfully.');
+    END IF;
+
+    COMMIT;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No employees found in the specified department.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
+```
+## OUTPUT:
+<img width="824" height="274" alt="image" src="https://github.com/user-attachments/assets/224be973-b0db-4d23-82d1-a0c26ce1ac13" />
 
 ---
 
