@@ -78,6 +78,45 @@ END;
 
 **Output:**  
 The program should display the employee details or an error message.
+## INPUT:
+```
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT emp_name, designation FROM employees;
+
+    v_name employees.emp_name%TYPE;
+    v_designation employees.designation%TYPE;
+
+BEGIN
+    OPEN emp_cursor;
+
+    FETCH emp_cursor INTO v_name, v_designation;
+    IF emp_cursor%NOTFOUND THEN
+        RAISE NO_DATA_FOUND;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Name: ' || v_name || ', Designation: ' || v_designation);
+    END IF;
+
+    LOOP
+        FETCH emp_cursor INTO v_name, v_designation;
+        EXIT WHEN emp_cursor%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || v_name || ', Designation: ' || v_designation);
+    END LOOP;
+
+    CLOSE emp_cursor;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No employee records found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
+```
+## OUTPUT:
+<img width="715" height="289" alt="image" src="https://github.com/user-attachments/assets/0656cd68-8524-42e8-a9f4-0a565a81df8d" />
+
 
 ---
 
