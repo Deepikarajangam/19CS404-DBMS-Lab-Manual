@@ -136,6 +136,55 @@ END;
 
 **Output:**  
 The program should display the employee details within the specified salary range or an error message if no data is found.
+## INPUT:
+```
+DECLARE
+    CURSOR emp_cursor (min_sal NUMBER, max_sal NUMBER) IS
+        SELECT emp_name, designation, salary
+        FROM employees
+        WHERE salary BETWEEN min_sal AND max_sal;
+
+    v_name employees.emp_name%TYPE;
+    v_designation employees.designation%TYPE;
+    v_salary employees.salary%TYPE;
+
+    v_min NUMBER := 35000;
+    v_max NUMBER := 60000;
+
+BEGIN
+    OPEN emp_cursor(v_min, v_max);
+
+    FETCH emp_cursor INTO v_name, v_designation, v_salary;
+    IF emp_cursor%NOTFOUND THEN
+        RAISE NO_DATA_FOUND;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Name: ' || v_name || 
+                             ', Designation: ' || v_designation || 
+                             ', Salary: ' || v_salary);
+    END IF;
+
+    LOOP
+        FETCH emp_cursor INTO v_name, v_designation, v_salary;
+        EXIT WHEN emp_cursor%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || v_name || 
+                             ', Designation: ' || v_designation || 
+                             ', Salary: ' || v_salary);
+    END LOOP;
+
+    CLOSE emp_cursor;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No employees found in the given salary range.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
+```
+## OUTPUT:
+<img width="860" height="283" alt="image" src="https://github.com/user-attachments/assets/7b794012-455d-4893-830a-9600e98d7fc9" />
+
 
 ---
 
@@ -155,6 +204,32 @@ The program should display the employee details within the specified salary rang
 
 **Output:**  
 The program should display employee names with their department numbers or the appropriate error message if no data is found.
+## INPUT:
+```
+DECLARE
+    count_emp NUMBER := 0;
+BEGIN
+    FOR rec IN (SELECT emp_name, dept_no FROM employees) LOOP
+        count_emp := count_emp + 1;
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.emp_name || 
+                             ', Dept No: ' || rec.dept_no);
+    END LOOP;
+
+    IF count_emp = 0 THEN
+        RAISE NO_DATA_FOUND;
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No employee records found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
+```
+## OUTPUT:
+<img width="798" height="294" alt="image" src="https://github.com/user-attachments/assets/3fbfe237-9fbb-4165-867d-4833269c784e" />
 
 ---
 
@@ -174,6 +249,48 @@ The program should display employee names with their department numbers or the a
 
 **Output:**  
 The program should display employee records or the appropriate error message if no data is found.
+## INPUT:
+```
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT * FROM employees;
+
+    emp_rec employees%ROWTYPE;
+    count_emp NUMBER := 0;
+
+BEGIN
+    OPEN emp_cursor;
+
+    LOOP
+        FETCH emp_cursor INTO emp_rec;
+        EXIT WHEN emp_cursor%NOTFOUND;
+
+        count_emp := count_emp + 1;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'ID: ' || emp_rec.emp_id ||
+            ', Name: ' || emp_rec.emp_name ||
+            ', Designation: ' || emp_rec.designation ||
+            ', Salary: ' || emp_rec.salary
+        );
+    END LOOP;
+
+    CLOSE emp_cursor;
+
+    IF count_emp = 0 THEN
+        RAISE NO_DATA_FOUND;
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No employee records found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
+```
+## OUTPUT:
+<img width="762" height="291" alt="image" src="https://github.com/user-attachments/assets/dacf2e0e-cead-4330-96c0-a674e063cd41" />
 
 ---
 
