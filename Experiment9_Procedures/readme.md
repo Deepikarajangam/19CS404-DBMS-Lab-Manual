@@ -62,6 +62,25 @@ Key Differences:
 
 **Expected Output:**  
 Square of 6 is 36
+## INPUT:
+```
+CREATE OR REPLACE PROCEDURE find_square (num IN NUMBER) IS
+    result NUMBER;
+BEGIN
+    result := num * num;
+    DBMS_OUTPUT.PUT_LINE('Square of ' || num || ' is ' || result);
+END;
+/
+```
+```
+BEGIN
+    find_square(6);
+END;
+/
+```
+## OUTPUT:
+<img width="765" height="302" alt="image" src="https://github.com/user-attachments/assets/5d3156ae-b84f-443f-9f78-cdbfa4745073" />
+
 
 ---
 
@@ -76,6 +95,30 @@ Square of 6 is 36
 
 **Expected Output:**  
 Factorial of 5 is 120
+## INPUT:
+```
+CREATE OR REPLACE FUNCTION get_factorial (n IN NUMBER)
+RETURN NUMBER
+IS
+    fact NUMBER := 1;
+BEGIN
+    FOR i IN 1..n LOOP
+        fact := fact * i;
+    END LOOP;
+
+    RETURN fact;
+END;
+/
+```
+DECLARE
+    result NUMBER;
+BEGIN
+    result := get_factorial(5);
+    DBMS_OUTPUT.PUT_LINE('Factorial of 5 is ' || result);
+END;
+/```
+## OUTPUT:
+<img width="679" height="260" alt="image" src="https://github.com/user-attachments/assets/8205bfa5-cec3-4e6d-90a1-fa2bfdc45454" />
 
 ---
 
@@ -89,6 +132,26 @@ Factorial of 5 is 120
 
 **Expected Output:**  
 12 is Even
+## INPUT:
+```
+CREATE OR REPLACE PROCEDURE check_even_odd (num IN NUMBER) IS
+BEGIN
+    IF MOD(num, 2) = 0 THEN
+        DBMS_OUTPUT.PUT_LINE(num || ' is Even');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(num || ' is Odd');
+    END IF;
+END;
+/
+```
+```
+BEGIN
+    check_even_odd(12);
+END;
+/
+```
+## OUTPUT:
+<img width="655" height="246" alt="image" src="https://github.com/user-attachments/assets/c1bd7893-2159-425c-a4e1-449508e25f53" />
 
 ---
 
@@ -103,6 +166,39 @@ Factorial of 5 is 120
 
 **Expected Output:**  
 Reversed number of 1234 is 4321
+## INPUT:
+```
+CREATE OR REPLACE FUNCTION reverse_number (n IN NUMBER)
+RETURN NUMBER
+IS
+    rev NUMBER := 0;
+    rem NUMBER;
+    temp NUMBER;
+BEGIN
+    temp := n;
+
+    WHILE temp > 0 LOOP
+        rem := MOD(temp, 10);
+        rev := rev * 10 + rem;
+        temp := FLOOR(temp / 10);
+    END LOOP;
+
+    RETURN rev;
+END;
+/
+```
+```
+DECLARE
+    result NUMBER;
+BEGIN
+    result := reverse_number(1234);
+    DBMS_OUTPUT.PUT_LINE('Reversed number of 1234 is ' || result);
+END;
+/
+```
+## OUTPUT:
+<img width="742" height="280" alt="image" src="https://github.com/user-attachments/assets/dd06e8f2-d31a-4b18-8cf1-82bcbe18c89d" />
+
 
 ---
 
@@ -121,6 +217,27 @@ Multiplication table of 5:
 5 x 3 = 15  
 ...  
 5 x 10 = 50
+## INPUT:
+```
+CREATE OR REPLACE PROCEDURE print_table (num IN NUMBER) IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Multiplication table of ' || num || ':');
+
+    FOR i IN 1..10 LOOP
+        DBMS_OUTPUT.PUT_LINE(num || ' x ' || i || ' = ' || (num * i));
+    END LOOP;
+END;
+/
+```
+```
+BEGIN
+    print_table(5);
+END;
+/
+```
+## OUTPUT:
+<img width="649" height="313" alt="image" src="https://github.com/user-attachments/assets/42886217-473b-4655-ab0a-119618353740" />
+
 
 ## RESULT
 Thus, the PL/SQL programs using procedures and functions were written, compiled, and executed successfully.
