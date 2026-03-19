@@ -32,6 +32,18 @@ END;
 
 **Expected Output:**
 - A new entry is added to the `employee_log` table each time a new record is inserted into the `employees` table.
+  ## INPUT:
+  ```
+  CREATE OR REPLACE TRIGGER trg_after_insert_emp
+AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_log (emp_id, emp_name, designation, log_date)
+    VALUES (:NEW.emp_id, :NEW.emp_name, :NEW.designation, SYSDATE);
+END;
+/```
+## OUTPUT:
+<img width="1007" height="359" alt="image" src="https://github.com/user-attachments/assets/97c0daa4-5903-403a-9162-1dbdd9a56dce" />
 
 ---
 
@@ -42,6 +54,16 @@ END;
 
 **Expected Output:**
 - If an attempt is made to delete a record from `sensitive_data`, an error message is raised, e.g., `ERROR: Deletion not allowed on this table.`
+## INPUT:
+```
+CREATE OR REPLACE TRIGGER trg_prevent_sensitive_delete
+BEFORE DELETE ON sensitive_data
+BEGIN
+   RAISE_APPLICATION_ERROR(-20001, 'ERROR: Deletion not allowed on this table.');
+END;
+```
+## OUTPUT:
+<img width="1024" height="226" alt="image" src="https://github.com/user-attachments/assets/3379ca64-d889-45e0-9db0-f7f57f3236d7" />
 
 ---
 
@@ -52,6 +74,18 @@ END;
 
 **Expected Output:**
 - The `last_modified` column in the `products` table is updated automatically to the current date and time when any record is updated.
+## INPUT:
+```
+CREATE OR REPLACE TRIGGER trg_update_timestamp
+BEFORE UPDATE ON products
+FOR EACH ROW
+BEGIN
+    :NEW.last_modified := SYSDATE;
+END;
+/
+```
+## OUTPUT:
+<img width="984" height="288" alt="image" src="https://github.com/user-attachments/assets/f67d1993-2e7f-4aae-a8ea-175d3068652d" />
 
 ---
 
@@ -62,6 +96,19 @@ END;
 
 **Expected Output:**
 - The `audit_log` table will maintain a count of how many updates have been made to the `customer_orders` table.
+## INPUT:
+```
+CREATE OR REPLACE TRIGGER trg_update_counter
+AFTER UPDATE ON customer_orders
+FOR EACH ROW
+BEGIN
+    UPDATE audit_log
+    SET update_count = update_count + 1;
+END;
+/
+```
+## OUTPUT:
+<img width="759" height="243" alt="image" src="https://github.com/user-attachments/assets/036e6ca4-84c7-4880-9ae2-f8397f8aaac7" />
 
 ---
 
@@ -72,6 +119,19 @@ END;
 
 **Expected Output:**
 - If the inserted salary in the `employees` table is below the condition (e.g., salary < 3000), the insert operation is blocked, and an error message is raised, such as: `ERROR: Salary below minimum threshold.`
+## INPUT:
+```
+CREATE OR REPLACE TRIGGER trg_check_salary
+BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+   IF :NEW.salary < 3000 THEN
+      RAISE_APPLICATION_ERROR(-20002, 'ERROR: Salary below minimum threshold.');
+   END IF;
+END;
+```
+## OUTPUT:
+<img width="923" height="191" alt="image" src="https://github.com/user-attachments/assets/71a6faea-e368-472e-9f09-ac9544ea0ffa" />
 
 ## RESULT
 Thus, the PL/SQL trigger programs were written and executed successfully.
